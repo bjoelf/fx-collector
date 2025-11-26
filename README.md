@@ -1,6 +1,8 @@
 # FX Collector
 
-**Standalone FX price collection service** - Real-time spread recording using the saxo-adapter library.
+**Standalone FX price collection service** - Real-time spread recording using the [saxo-adapter](https://github.com/bjoelf/saxo-adapter) library.
+
+> **📚 Demo Project:** This project also serves as a demonstration of how to consume the [saxo-adapter](https://github.com/bjoelf/saxo-adapter) library for Saxo Bank API integration with OAuth2 authentication and WebSocket streaming.
 
 ## Purpose
 
@@ -25,6 +27,15 @@ SAXO_CLIENT_SECRET=your_client_secret
 SPREAD_RECORDING_DIR=data/spreads
 SPREAD_FLUSH_INTERVAL=30s
 ```
+
+**Important:** Configure the OAuth callback URL in your Saxo Bank application settings:
+```
+http://localhost:8080/oauth/callback
+```
+
+This callback URL must be registered in your Saxo OpenAPI application configuration.
+
+If URL or port is changed this must be reflected in your Saxo OpenAPI application configuration.
 
 ### 2. Run Locally
 
@@ -53,7 +64,7 @@ tail -f data/spreads/$(date +%Y%m%d)/EURUSD_$(date +%H).csv
 - ✅ **Hourly CSV files** - Organized by date and hour
 - ✅ **Automatic reconnection** - Handles network interruptions
 - ✅ **Token refresh** - OAuth2 automatic token management
-- ✅ **Minimal UI** - Simple status page at http://localhost:8080
+- ✅ **Minimal UI** - Simple login page at http://localhost:8080
 
 ## Data Format
 
