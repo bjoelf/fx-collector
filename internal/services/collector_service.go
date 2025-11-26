@@ -94,6 +94,20 @@ func (cs *CollectorService) Start() error {
 	}
 	cs.logger.Println("WebSocket connected")
 
+	// Register instruments with WebSocket for UIC mapping
+	// CRITICAL: This must be called before SubscribeToPrices
+	saxoInstruments := cs.convertToSaxoInstruments()
+
+	// Cast to concrete type to access RegisterInstruments (not in WebSocketClient interface)
+	if saxoWS, ok := cs.wsClient.(interface {
+		RegisterInstruments(instruments []*saxo.Instrument)
+	}); ok {
+		saxoWS.RegisterInstruments(saxoInstruments)
+		cs.logger.Printf("Registered %d instruments with WebSocket", len(saxoInstruments))
+	} else {
+		cs.logger.Println("Warning: WebSocket client doesn't support RegisterInstruments")
+	}
+
 	tickers := cs.getAllTickers()
 	cs.logger.Printf("Subscribing to %d instruments", len(tickers))
 
@@ -222,4 +236,19 @@ func (cs *CollectorService) Stop() error {
 
 	cs.logger.Println("FX Collector Service stopped")
 	return nil
+}
+
+// convertToSaxoInstruments converts collector instruments to saxo.Instrument format for WebSocket registration
+func (cs *CollectorService) convertToSaxoInstruments() []*saxo.Instrument {
+	saxoInstruments := make([]*saxo.Instrument, 0, len(cs.instruments))
+
+	for _, inst := range cs.instruments {
+		saxoInstruments = append(saxoInstruments, &saxo.Instrument{
+			Ticker:     inst.Ticker,
+			Identifier: inst.Uic,
+			AssetType:  inst.AssetType,
+		})
+	}
+
+	return saxoInstruments
 }
