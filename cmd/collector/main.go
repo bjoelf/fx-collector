@@ -108,13 +108,49 @@ func run() error {
 
 // loadConfig loads all configuration from .env file and environment variables
 func loadConfig(logger *log.Logger) (*Config, error) {
-	// Load .env file (optional - will use system environment if missing)
-	if err := godotenv.Load(); err != nil {
-		logger.Printf("Warning: .env file not found, using system environment variables")
+	// Load .env file following pivot-web2 pattern (supports debug run from cmd/collector/ and run from root)
+	envPaths := []string{
+		".env",       // Current directory (root)
+		"../../.env", // From cmd/collector/ to project root
+		"../.env",    // From cmd/ to project root
 	}
 
-	// Read configuration values from environment
-	instrumentsPath := getEnv("INSTRUMENTS_PATH", "data/instruments.json")
+	loaded := false
+	for _, envPath := range envPaths {
+		if _, err := os.Stat(envPath); err == nil {
+			if err := godotenv.Load(envPath); err == nil {
+				loaded = true
+				logger.Printf("Loaded .env from: %s", envPath)
+				break
+			}
+		}
+	}
+
+	if !loaded {
+		logger.Println("Warning: .env file not found in any expected location, using system environment variables")
+	}
+
+	// Read configuration values from environment with multiple relative path support for instruments
+	instrumentsPaths := []string{
+		getEnv("INSTRUMENTS_PATH", "data/instruments.json"), // Default from env or "data/instruments.json"
+		"../../data/instruments.json",                       // From cmd/collector/ to project root
+		"../data/instruments.json",                          // From cmd/ to project root
+		"data/instruments.json",                             // Current directory
+	}
+
+	var instrumentsPath string
+	for _, path := range instrumentsPaths {
+		if _, err := os.Stat(path); err == nil {
+			instrumentsPath = path
+			logger.Printf("Found instruments file at: %s", path)
+			break
+		}
+	}
+
+	if instrumentsPath == "" {
+		return nil, fmt.Errorf("instruments file not found in any expected location: %v", instrumentsPaths)
+	}
+
 	spreadDir := getEnv("SPREAD_RECORDING_DIR", "data/spreads")
 	flushIntervalStr := getEnv("SPREAD_FLUSH_INTERVAL", "30s")
 
