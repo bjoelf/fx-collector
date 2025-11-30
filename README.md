@@ -105,13 +105,13 @@ Flow:
 
 ## Instruments Monitored
 
-17 FX spot pairs from `config/instruments.json`:
+17 FX spot pairs from `data/instruments.json`:
 
 - **Major Pairs**: EURUSD, USDJPY, GBPUSD
 - **Cross Pairs**: EURJPY, GBPJPY, AUDJPY, CHFJPY
 - **Others**: AUDUSD, USDCAD, USDCHF, and more
 
-Edit `config/instruments.json` to customize monitored instruments.
+Edit `data/instruments.json` to customize monitored instruments.
 
 ## Development
 
@@ -126,17 +126,18 @@ go build -o fx-collector ./cmd/collector
 INSTRUMENTS_CONFIG=custom.json go run ./cmd/collector
 ```
 
-## Deployment
+## Documentation
 
-See [PROJECT_GUIDE.md](PROJECT_GUIDE.md) for detailed deployment instructions.
+- **[WebSocket Integration TL;DR](docs/WEBSOCKET_INTEGRATION_TLDR.md)** - Quick reference for saxo-adapter WebSocket integration
+- **[Saxo Adapter Integration Guide](docs/SAXO_ADAPTER_INTEGRATION.md)** - Complete integration guide with best practices
 
 ## Troubleshooting
 
 **No data appearing:**
 
 - Check OAuth credentials are correct in `.env`
-- Verify `BROKER_CLIENT_ID` and `BROKER_CLIENT_SECRET` are set
-- Verify all required URLs (`AUTH_URL`, `TOKEN_URL`, `BROKER_BASE_URL`, `BROKER_WEBSOCKET_URL`)
+- Verify `SAXO_CLIENT_ID` and `SAXO_CLIENT_SECRET` are set
+- Verify `SAXO_ENVIRONMENT` is set to `sim` or `live`
 - Check WebSocket connection in logs
 
 **Connection drops:**
@@ -149,10 +150,6 @@ See [PROJECT_GUIDE.md](PROJECT_GUIDE.md) for detailed deployment instructions.
 
 - Ensure `data/spreads/` directory is writable
 - Check disk space availability
-
-## Project Status
-
-This is part of the pivot-web2 refactoring project. See [PROJECT_GUIDE.md](PROJECT_GUIDE.md) for overall architecture and roadmap.
 
 ## License
 
