@@ -7,6 +7,7 @@
 ## Purpose
 
 FX Collector is a lightweight service that:
+
 - Collects real-time FX price data (bid/ask/spread) via WebSocket
 - Records spread data to CSV files for analysis
 - Tests the saxo-adapter library for long-term stability
@@ -17,6 +18,7 @@ FX Collector is a lightweight service that:
 ### 1. Configuration
 
 Edit `.env` with your Saxo credentials:
+
 ```env
 # Saxo credentials (SIM environment)
 SAXO_ENVIRONMENT=sim
@@ -29,9 +31,8 @@ SPREAD_FLUSH_INTERVAL=30s
 ```
 
 **Important:** Configure the OAuth callback URL in your Saxo Bank application settings:
-```
-http://localhost:8080/oauth/callback
-```
+
+<http://localhost:8080/oauth/callback>
 
 This callback URL must be registered in your Saxo OpenAPI application configuration.
 
@@ -64,7 +65,7 @@ tail -f data/spreads/$(date +%Y%m%d)/EURUSD_$(date +%H).csv
 - ✅ **Hourly CSV files** - Organized by date and hour
 - ✅ **Automatic reconnection** - Handles network interruptions
 - ✅ **Token refresh** - OAuth2 automatic token management
-- ✅ **Minimal UI** - Simple login page at http://localhost:8080
+- ✅ **Minimal UI** - Simple login page at <http://localhost:8080>
 
 ## Data Format
 
@@ -77,17 +78,18 @@ timestamp,uic,ticker,asset_type,bid,ask,spread
 
 ## Architecture
 
-```
 main.go → LoadInstruments() → saxo.CreateSaxoAuthClient() → CollectorService → WebSocket → CSV Files
-```
 
 **Simplified Design:**
+
 - **No config package** - Everything in main.go
+
 - **saxo-adapter handles OAuth** - Uses `LoadSaxoEnvironmentConfig()`
 - **Direct instrument map** - Simple `map[string]Instrument` lookup
 - **Minimal dependencies** - Clean and straightforward
 
 Flow:
+
 - **saxo-adapter (WebSocket)** → CollectorService → CSVSpreadRecorder → CSV Files
 
 ## Configuration Reference
@@ -104,6 +106,7 @@ Flow:
 ## Instruments Monitored
 
 17 FX spot pairs from `config/instruments.json`:
+
 - **Major Pairs**: EURUSD, USDJPY, GBPUSD
 - **Cross Pairs**: EURJPY, GBPJPY, AUDJPY, CHFJPY
 - **Others**: AUDUSD, USDCAD, USDCHF, and more
@@ -130,17 +133,20 @@ See [PROJECT_GUIDE.md](PROJECT_GUIDE.md) for detailed deployment instructions.
 ## Troubleshooting
 
 **No data appearing:**
+
 - Check OAuth credentials are correct in `.env`
 - Verify `BROKER_CLIENT_ID` and `BROKER_CLIENT_SECRET` are set
 - Verify all required URLs (`AUTH_URL`, `TOKEN_URL`, `BROKER_BASE_URL`, `BROKER_WEBSOCKET_URL`)
 - Check WebSocket connection in logs
 
 **Connection drops:**
+
 - Network interruptions are handled automatically
 - Check logs for reconnection attempts
 - Verify token refresh is working
 
 **File errors:**
+
 - Ensure `data/spreads/` directory is writable
 - Check disk space availability
 

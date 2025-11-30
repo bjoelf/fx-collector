@@ -5,6 +5,7 @@ This document shows how `fx-collector` demonstrates proper usage of the `saxo-ad
 ## Overview
 
 `fx-collector` is a **reference implementation** showing best practices for:
+
 - Authentication and token management
 - WebSocket connection lifecycle
 - Price streaming subscriptions
@@ -97,6 +98,7 @@ if saxoAuth, ok := cs.authClient.(interface {
 ```
 
 **Why This Matters**: 
+
 - Saxo access tokens expire after **20 minutes**
 - `StartTokenEarlyRefresh()` proactively refreshes tokens **before expiration**
 - WebSocket state channels coordinate refresh with active connections
@@ -161,6 +163,7 @@ func (cs *CollectorService) processPriceUpdates() {
 ```
 
 **Key Patterns**:
+
 - Always check channel closed (`ok`) status
 - Handle context cancellation for graceful shutdown
 - Process errors without stopping the loop
@@ -247,6 +250,7 @@ SPREAD_FLUSH_INTERVAL=30s
 ```
 
 **Configuration Loading Pattern** (following legacy main.go):
+
 ```go
 // Load config early with fail-fast validation
 envConfig, err := config.LoadEnvConfig()
