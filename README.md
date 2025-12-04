@@ -15,9 +15,14 @@ FX Collector is a lightweight service that:
 
 ## Quick Start
 
+### Primer on golang dev setup with basic examples
+
+[saxo-adapter](https://github.com/bjoelf/saxo-adapter) library for details on 
+getting a golang enviroment up and running if needed.
+
 ### 1. Configuration
 
-Edit `.env` with your Saxo credentials:
+Put `.env` in project root and edit it with your Saxo credentials:
 
 ```env
 # Saxo credentials (SIM environment)

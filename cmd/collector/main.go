@@ -47,6 +47,10 @@ func run() error {
 		return fmt.Errorf("failed to create auth client: %w", err)
 	}
 
+	// If you arrive here from examples/basic_auth,
+	// and wonder where the authentication step is:
+	// the authClient.Login() happens in NewCollectorService.Start()
+
 	// Create broker services (inject authClient)
 	logger.Println("Creating broker services...")
 	brokerClient, err := saxo.CreateBrokerServices(authClient, logger)
